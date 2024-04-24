@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <ul>
+    <% if (messages.success_msg) { %>
+        <li><%= messages.success_msg %></li>
+    <% } %>
+    </ul>
+
+    <ul>
+    <% if (messages.error_msg) { %>
+        <li><%= messages.error_msg %></li>
+    <% } %>
+    
+    <form action="/users/login" method="POST">
+        <div>
+
+        <input type="email" name="email" placeholder="Email" required>
+        </div>
+        <div>
+        <input type="password" id="password" name="password" placeholder="password" required>
+        </div>
+
+        <div>
+            <label>
+                <input type="radio" name="role" value="client" checked> Client
+            </label>
+            <label>
+                <input type="radio" name="role" value="librarian"> Librarian
+            </label>
+        </div>
+        <button type="submit">Login</button>
+        <a href="/users/register">Register</a>
+    </form>
+</body>
+</html>

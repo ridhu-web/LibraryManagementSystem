@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librarian Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .menu {
+            background-color: #f0f0f0;
+            padding: 10px;
+            text-align: center;
+        }
+        .menu a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .menu a:hover {
+            text-decoration: underline;
+        }
+        .content {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <a href="#" onclick="showSection('insert-new')">Insert New Document</a>
+        <a href="#" onclick="showSection('update-document')">Update Document</a>
+        <a href="#" onclick="showSection('register-client')">Register New Client</a>
+        <a href="#" onclick="showSection('update-client')">Update Client</a>
+        <a href="#" onclick="showSection('delete-client')">Delete Client</a>
+        <a href="/users/logout">Logout</a>
+    </div>
+    <h1>Hello Librarian</h1>
+    <h2><%= user %></h2>
+
+    <div id="insert-new" class="content">
+        <h3>Insert New Document</h3>
+        <!-- Form for inserting a new document -->
+    </div>
+    <div id="update-document" class="content">
+        <h3>Update Document</h3>
+        <!-- Form for updating an existing document -->
+    </div>
+
+    <div id="register-client" class="content">
+        <h3>Register New Client</h3>
+        <form action="/clients/register" method="post">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+    
+            <div id="addressFields">
+                <h4>Address:</h4>
+            </div>
+            <button type="button" id="addAddressBtn">Add Another Address</button>
+    
+            <div id="creditCardFields">
+                <h4>Credit Card:</h4>
+            </div>
+            <button type="button" id="addCardBtn">Add Another Credit Card</button>
+    
+            <button type="submit">Register Client</button>
+        </form>
+    </div>
+    
+    <div id="update-client" class="content">
+        <h3>Update Client</h3>
+        <!-- Form for updating client information -->
+    </div>
+    <div id="delete-client" class="content">
+        <h3>Delete Client</h3>
+        <!-- Form for deleting a client -->
+    </div>
+
+
+    <script>
+        console.log("Hello from the script tag");
+        
+        let addressCounter = 0; // Global counter for addresses
+        
+        function updatePaymentAddressOptions() {
+            const paymentAddressSelects = document.querySelectorAll('.payment-address-select');
+            paymentAddressSelects.forEach(select => {
+                const currentSelectedValue = select.value;
+                select.innerHTML = ''; // Clear existing options
+                for (let i = 1; i <= addressCounter; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = 'Address ' + i;
+                    select.appendChild(option);
+                }
+                select.value = currentSelectedValue; // Retain previously selected value if applicable
+            });
+        }
+        
+        function addCreditCardGroup(container) {
+            const cardGroup = document.createElement('div');
+            cardGroup.className = 'card-group';
+        
+            const cardFields = {
+                cardNumber: 'Card Number',
+                cardHolderName: 'Card Holder Name'
+            };
+        
+            for (let field in cardFields) {
+                const label = document.createElement('label');
+                label.textContent = cardFields[field] + ':';
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = field + (container.querySelectorAll('.card-group').length + 1);
+                input.required = true;
+                cardGroup.appendChild(label);
+                cardGroup.appendChild(input);
+            }
+        
+            const label = document.createElement('label');
+            label.textContent = 'Payment Address:';
+            const select = document.createElement('select');
+            select.className = 'payment-address-select';
+            select.name = 'paymentAddress';
+            cardGroup.appendChild(label);
+            cardGroup.appendChild(select);
+            
+            container.appendChild(cardGroup);
+            updatePaymentAddressOptions(); // Ensure this is called after adding the card group
+        }
+        
+        document.getElementById('addCardBtn').addEventListener('click', function() {
+            const container = document.getElementById('creditCardFields');
+            addCreditCardGroup(container);
+        });
+        
+        document.getElementById('addAddressBtn').addEventListener('click', function() {
+            const container = document.getElementById('addressFields');
+            addFieldGroup(container);
+        });
+        
+        function addFieldGroup(container) {
+            addressCounter++; // Increment global address counter
+            const fieldGroup = document.createElement('div');
+            fieldGroup.className = 'address-group';
+        
+            const addressLabel = document.createElement('label');
+            addressLabel.textContent = 'Address ' + addressCounter + ': ';
+            fieldGroup.appendChild(addressLabel);
+        
+            const fields = {
+                streetAddress: 'Street Address',
+                city: 'City',
+                state: 'State',
+                zipCode: 'ZIP Code'
+            };
+        
+            for (let field in fields) {
+                const label = document.createElement('label');
+                label.textContent = fields[field] + ':';
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = field + addressCounter;
+                input.required = true;
+                fieldGroup.appendChild(label);
+                fieldGroup.appendChild(input);
+            }
+        
+            container.appendChild(fieldGroup);
+            updatePaymentAddressOptions(); // Also update when adding an address
+        }
+        
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.content');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+        
+            const activeSection = document.getElementById(sectionId);
+            if (activeSection) {
+                activeSection.style.display = 'block';
+            }
+        }
+        </script>
+</body>
+</html>
